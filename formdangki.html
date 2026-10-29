@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>something</title>
+
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* CONTAINER FORM ĐĂNG KÝ */
+    .container {
+        border: 4px solid red;
+        width: 50%;
+        height: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+    }
+
+    /* HEADER FORM  */
+    .container--header {
+        height: 80px;
+        background-color: rgb(255, 206, 133);
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .container--header button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border: none;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    /* NỘI DUNG TRONG CÁC SUB_CONTAINER */
+    .container--sub_container {
+        background-color: rgb(139, 255, 139);
+        width: 100%;
+        height:100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .sub_container{
+        display:flex;   
+        
+    }
+    .item1{
+        width:40%;
+        border:2px solid blue;
+        border-radius:10px;
+        padding:4px;
+    }
+    .item2{
+        width:60%;
+        margin-right:0;
+    }
+    .item2 input{
+        width:98%;
+        height:100%;
+        border-radius:10px;
+        outline:none;
+        
+    }
+    .content10{
+        display:flex;
+        justify-content:center;
+        border:1px solid red;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="container--header">
+            <h1>Form đăng kí</h1>
+            <button>&times;</button>
+        </div>
+        <div class="container--sub_container">
+            <div class="sub_container content1">
+                <div class="item1"><p>Tên Đăng Nhập:</p></div>
+                <div class="item2"><input type="text"></div>
+            </div>
+            <div class="sub_container content2">
+                <div class="item1"><p>Mật khẩu:</p></div>
+                <div class="item2"><input type="text"></div>
+            </div>
+            <div class="sub_container content3">
+                <div class="item1"><p>Họ tên:</p></div>
+                <div class="item2"><input type="text"></div>
+            </div>
+            <div class="sub_container content4">
+                <div class="item1"><p>Email:</p></div>
+                <div class="item2"><input type="text"></div>
+            </div>
+            <div class="sub_container content5">
+                <div class="item1"><p>Điện thoại:</p></div>
+                <div class="item2"><input type="text"></div>
+            </div>
+
+            <div class="sub_container content6">
+                <div class="item1"><p>Năm sinh:</p></div>
+                <div class="item2"><input type="date" ></div>
+            </div>
+            <div class="sub_container content7">
+                <div class="item1"><p>Năm sinh:</p></div>
+                <div class="item2"><input></div>
+            </div>
+            <div class="sub_container content8">
+                <div class="item"><p>Giới tính<span><input type="checkbox"></span>Nam<input type="checkbox">Nữ</p></div>
+
+            </div>
+            <div class="sub_container content9">
+                <div class="item"><p>Sở thích<span><input type="checkbox">Chơi thể thao<input type="checkbox">Nghe nhạc<input type="checkbox">Mua sắm</span></p></div>
+            </div>
+            <div class="sub_container content10">
+                <button>Nộp lại</button>
+                <button>Đặt lại</button>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
