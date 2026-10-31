@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Khách hàng - UnU Pet Shop</title>
+    <!-- Thư viện FontAwesome để hiển thị các icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fdfbfb;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid #f0eae1;
+        }
+
+        /* Bảng hiển thị */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #faf6f0;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: #faf9f6;
+        }
+
+        /* Cột Khách hàng & Mã */
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .customer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0d8cd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-weight: bold;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: #2c2c2c;
+        }
+
+        .customer-id {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* Thông tin liên hệ */
+        .contact-phone {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .contact-email {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* Trạng thái */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background-color: #e6f4ea;
+            color: #137333;
+        }
+
+        .status-badge.locked {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+
+        /* Hành động */
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #d97706;
+        }
+
+        /* Khu vực phân trang (Pagination) */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background-color: #fff;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            min-width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .page-btn.active {
+            background-color: #f59e0b;
+            border-color: #f59e0b;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .page-btn:disabled {
+            color: #ccc;
+            border-color: #eee;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;"><input type="checkbox" id="select-all"></th>
+                    <th>Khách hàng & Mã KH</th>
+                    <th>Thông tin liên hệ</th>
+                    <th>Trạng thái</th>
+                    <th style="width: 120px;">Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Dữ liệu sẽ được render tự động bằng JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Thanh phân trang -->
+        <div class="pagination-container">
+            <div id="pagination-info">Hiển thị 0 trên tổng số 0 khách hàng</div>
+            <div class="pagination" id="pagination-controls">
+                <!-- Nút phân trang sẽ được tạo tự động bằng JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Dữ liệu mẫu giả lập danh sách khách hàng (bạn có thể thay bằng dữ liệu fetch từ user.json)
+        let customers = [
+            { id: "KH-00892", name: "Nguyễn Thu Hà", phone: "0982 451 902", email: "thuhanguyen@gmail.com", status: "active" },
+            { id: "KH-00431", name: "Trần Quốc Bảo", phone: "0913 882 119", email: "baotran@outlook.com", status: "locked" },
+            { id: "KH-00108", name: "Lê Hoàng Minh Anh", phone: "0977 123 456", email: "minhanhle@gmail.com", status: "active" },
+            { id: "KH-02194", name: "Phạm Văn Đức", phone: "0904 556 789", email: "ducpv94@gmail.com", status: "active" },
+            { id: "KH-01552", name: "Đỗ Quỳnh Như", phone: "0938 776 221", email: "nhudoquynh@icloud.com", status: "active" },
+            { id: "KH-03011", name: "Vũ Hải Đăng", phone: "0962 998 334", email: "haidangvu@gmail.com", status: "active" },
+            { id: "KH-03012", name: "Nguyễn Văn A", phone: "0901 111 222", email: "vana@gmail.com", status: "active" },
+            { id: "KH-03013", name: "Trần Thị B", phone: "0902 333 444", email: "tranb@gmail.com", status: "locked" },
+            { id: "KH-03014", name: "Lê Văn C", phone: "0903 555 666", email: "levanc@gmail.com", status: "active" },
+            { id: "KH-03015", name: "Phạm Thị D", phone: "0904 777 888", email: "phamd@gmail.com", status: "active" },
+            { id: "KH-03016", name: "Hoàng Văn E", phone: "0905 999 000", email: "hoange@gmail.com", status: "active" }
+        ];
+
+        // 2. Cấu hình phân trang
+        let currentPage = 1;
+        let rowsPerPage = 5; // Số dòng hiển thị trên mỗi trang
+
+        const tableBody = document.getElementById("table-body");
+        const paginationControls = document.getElementById("pagination-controls");
+        const paginationInfo = document.getElementById("pagination-info");
+
+        // 3. Hàm hiển thị dữ liệu lên bảng theo trang hiện tại
+        function displayTableData() {
+            tableBody.innerHTML = "";
+
+            let start = (currentPage - 1) * rowsPerPage;
+            let end = start + rowsPerPage;
+            let paginatedItems = customers.slice(start, end);
+
+            // Nếu không có dữ liệu
+            if (paginatedItems.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #888;">Không có dữ liệu khách hàng</td></tr>`;
+                return;
+            }
+
+            paginatedItems.forEach((customer, index) => {
+                let tr = document.createElement("tr");
+
+                let statusHtml = customer.status === 'active' 
+                    ? `<span class="status-badge active"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> Đang hoạt động</span>`
+                    : `<span class="status-badge locked"><i class="fa-solid fa-lock" style="font-size: 10px;"></i> Đã khóa (Bảo mật)</span>`;
+
+                // Nút hành động đổi trạng thái khóa/mở khóa tùy theo trạng thái thực tế
+                let lockUnlockIcon = customer.status === 'active' ? 'fa-lock' : 'fa-unlock';
+                let lockUnlockTitle = customer.status === 'active' ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
+
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>
+                        <div class="customer-info">
+                            <div class="customer-avatar">${customer.name.charAt(0)}</div>
+                            <div>
+                                <div class="customer-name">${customer.name}</div>
+                                <div class="customer-id">Mã: ${customer.id}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="contact-phone">${customer.phone}</div>
+                        <div class="contact-email">${customer.email}</div>
+                    </td>
+                    <td>${statusHtml}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn" title="Khôi phục"><i class="fa-solid fa-rotate-left"></i></button>
+                            <button class="action-btn" onclick="toggleStatus('${customer.id}')" title="${lockUnlockTitle}"><i class="fa-solid ${lockUnlockIcon}"></i></button>
+                            <button class="action-btn" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            updatePaginationInfo(start + 1, Math.min(end, customers.length), customers.length);
+            setupPaginationButtons();
+        }
+
+        // 4. Cập nhật thông tin dòng hiển thị phía dưới bảng
+        function updatePaginationInfo(start, end, total) {
+            paginationInfo.innerText = `Hiển thị ${start}-${end} trên tổng số ${total} khách hàng`;
+        }
+
+        // 5. Tạo các nút điều hướng trang (Pagination Controls)
+        function setupPaginationButtons() {
+            paginationControls.innerHTML = "";
+            let totalPages = Math.ceil(customers.length / rowsPerPage);
+
+            // Nút "Trang trước" (<)
+            let prevBtn = document.createElement("button");
+            prevBtn.className = "page-btn";
+            prevBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayTableData();
+                }
+            };
+            paginationControls.appendChild(prevBtn);
+
+            // Các nút số trang
+            for (let i = 1; i <= totalPages; i++) {
+                let btn = document.createElement("button");
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => {
+                    currentPage = i;
+                    displayTableData();
+                };
+                paginationControls.appendChild(btn);
+            }
+
+            // Nút "Trang sau" (>)
+            let nextBtn = document.createElement("button");
+            nextBtn.className = "page-btn";
+            nextBtn.innerHTML = `<i class="fa-solid fa-chevron-right"></i>`;
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayTableData();
+                }
+            };
+            paginationControls.appendChild(nextBtn);
+        }
+
+        // 6. Hàm xử lý logic Khóa / Mở khóa tài khoản khi bấm nút hành động
+        function toggleStatus(id) {
+            let customer = customers.find(c => c.id === id);
+            if (customer) {
+                customer.status = customer.status === 'active' ? 'locked' : 'active';
+                displayTableData(); // Vẽ lại bảng sau khi thay đổi trạng thái
+            }
+        }
+
+        // Khởi chạy lần đầu khi tải trang
+        displayTableData();
+    </script>
+</body>
+</html>
